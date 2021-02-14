@@ -1,0 +1,297 @@
+﻿    <!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed|Roboto+Mono|Lobster|Oswald|Luckiest+Guy"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="lib.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <meta name="google-signin-scope" content="profile email">
+  <meta name="google-signin-client_id"
+    content="576965050401-deke4t7drk9dgfdt2gssi8k5d6d0n70u.apps.googleusercontent.com">
+  <title>Speedcube timer BETA</title>
+  <meta name="description"
+    content="A timer for speed cubing. Log in to save scores in the cloud and get statistics on your times. This site saves all information for you so the only thing you will need to do is start cubing." />
+  <meta property="og:description"
+    content="A timer for speed cubing. Log in to save scores in the cloud and get statistics on your times. This site saves all information for you so the only thing you will need to do is start cubing." />
+  <meta property="og:site_name" content="Speedcube timer" />
+  <meta property="og:title" content="Speedcube timer">
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://oliver-brodersen.com/" />
+  <meta property="og:image" content="https://oliver-brodersen.com/img/prev.png" />
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+  <meta name="author" content="Oliver Brodersen" />
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@oliverbrodersen">
+  <link rel="icon" type="image/png" sizes="32x32" href="icon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="icon/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="icon/favicon-16x16.png">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+  <meta name="theme-color" content="#F5F5F5">
+  <link href="https://plus.google.com/u/0/107507810385860800591" rel="publisher" />
+  <link rel="stylesheet" type="text/css" href="https://csshake.surge.sh/csshake.min.css">
+  <script src="moment.js"></script>
+  <script src="script.js"></script>
+</head>
+
+<body data-theme="false" id="body">
+
+  <script>
+    if (Cookies.get('mode') !== undefined)
+      document.body.setAttribute('data-theme', Cookies.get('mode'));
+  </script>
+  <div id="loaderCont">
+    <div class="rubiks-loader">
+      <div class="cube">
+        <!-- base position -->
+        <div class="face front piece row-top    col-left   yellow"></div>
+        <div class="face front piece row-top    col-center green "></div>
+        <div class="face front piece row-top    col-right  white "></div>
+        <div class="face front piece row-center col-left   blue  "></div>
+        <div class="face front piece row-center col-center green "></div>
+        <div class="face front piece row-center col-right  blue  "></div>
+        <div class="face front piece row-bottom col-left   green "></div>
+        <div class="face front piece row-bottom col-center yellow"></div>
+        <div class="face front piece row-bottom col-right  red   "></div>
+
+        <!-- first step: E', equator inverted -->
+        <div class="face down  piece row-top    col-center green "></div>
+        <div class="face down  piece row-center col-center red   "></div>
+        <div class="face down  piece row-bottom col-center white "></div>
+
+        <!-- second step: M, middle -->
+        <div class="face right piece row-center col-left   yellow"></div>
+        <div class="face right piece row-center col-center green "></div>
+        <div class="face right piece row-center col-right  blue  "></div>
+
+        <!-- third step: L, left -->
+        <div class="face up    piece row-top    col-left   yellow"></div>
+        <div class="face up    piece row-center col-left   blue  "></div>
+        <div class="face up    piece row-bottom col-left   green "></div>
+
+        <!-- fourth step: D, down -->
+        <div class="face left  piece row-bottom col-left   green "></div>
+        <div class="face left  piece row-bottom col-center yellow"></div>
+        <div class="face left  piece row-bottom col-right  red   "></div>
+      </div>
+    </div>
+  </div>
+  <div id="intro">
+    <h7 id="introMessage">
+      <div id="process"></div>
+      <h7 class="next" onclick="introForward()">Next</h7>
+      <h7 class="skip" onclick="introReset()">Skip</h7>Hey, welcome to the Speedcubing timing assistant! This site will
+      help keep track of solve times and display the data for you.
+    </h7>
+  </div>
+  <div id="profile" onclick="toggleProfile();">
+  </div>
+  <div id="profileDropDown">
+    <div id="DisplayInfo" class="part hover">
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    </div>
+    <div class="part" id="myCubes"> 
+      <h9>
+        My Cubes <span id="listsLeft"> 0/5</span>
+        <svg class="deleteIcon"  version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="25" height="25" viewBox="0 0 25 25" onclick="deleteLists();">
+        <path fill="#444444" d="M8.1 14l6.4-7.2c0.6-0.7 0.6-1.8-0.1-2.5l-2.7-2.7c-0.3-0.4-0.8-0.6-1.3-0.6h-1.8c-0.5 0-1 0.2-1.4 0.6l-6.7 7.6c-0.6 0.7-0.6 1.9 0.1 2.5l2.7 2.7c0.3 0.4 0.8 0.6 1.3 0.6h11.4v-1h-7.9zM6.8 13.9c0 0 0-0.1 0 0l-2.7-2.7c-0.4-0.4-0.4-0.9 0-1.3l3.4-3.9h-1l-3 3.3c-0.6 0.7-0.6 1.7 0.1 2.4l2.3 2.3h-1.3c-0.2 0-0.4-0.1-0.6-0.2l-2.8-2.8c-0.3-0.3-0.3-0.8 0-1.1l3.5-3.9h1.8l3.5-4h1l-3.5 4 3.1 3.7-3.5 4c-0.1 0.1-0.2 0.1-0.3 0.2z"></path>
+      </svg></br>
+      </h9>
+      <div id="myCubesList">
+          <div id="incognito" class="cubeList" onclick="activeCube('Incognito');">
+              <img src="cube/incognito.png">
+              <p>Incognito</p>
+          </div>
+          <div id="addList" class="cubeList" onclick="createNewList();">
+              <img src="cube/add.png">
+              <p>Add new list</p>
+          </div>
+          <div id="addListContainer">
+              <div id="addListPrompt">
+                  Choose type
+                  <span id="addListTypeSpan"></span>
+                  <div id="iconList">
+                  </div>            
+                  Name list
+                  <input type="text" id="addListName" placeholder="Name" onkeyup="if(iconSelected !== '' &&  $('#addListName').val() !== ''){$('.create').addClass('ready');}else{$('.create').removeClass('ready');}"/>
+                  <button class="modal__btn modal__btn-primary create" onclick="generateNewList();">Create new list</button>
+                  <button class="modal__btn modal__btn-primary cancel" onclick="createNewList();">Cancel</button>
+                </div>
+          </div>
+      </div>
+    </div>
+    <div class="part">
+      <button class="modal__btn modal__btn-primary" onclick="MicroModal.show('modal-1');">Log
+        out<output></output></button>
+    </div>
+    <div class="part">
+      <a href="http://oliver-brodersen.com"><kbd>&#60; Oliver Brodersen /&#62;</kbd></a>
+    </div>
+  </div>
+  <div id="activeCube" onclick="toggleProfile();">
+  </div>
+  <div id="message"></div>
+  <div id="progress"></div>
+  <h1 id="timer">0:00.00</h1>
+  <div id="leftL" class="hand">
+    <div id="handLY" class="show"></div>
+    <div id="handLR" class=""></div>
+    <div id="handLG" class=""></div>
+    <img src="cube/hand.png" />
+  </div>
+  <div id="leftR" class="hand">
+    <div id="handRY" class="show"></div>
+    <div id="handRR" class=""></div>
+    <div id="handRG" class=""></div>
+    <img src="cube/hand.png" />
+  </div>
+  <div id="scrabble"></div>
+  <div id="statCont">
+    <div id="statsTimes" class="card">
+      Times
+      <div id="manAdd">
+          <input id="input" type="text" placeholder="1:23.45" onkeyup="inputType(this.value)"/>
+          <button id="add" onclick="manualAdd($('#input').val());">+</button>
+      </div>
+      <div id="TimesCont">
+      </div>
+      <button id="undo" onclick="doUndo(); this.blur();">
+        <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px" y="0px" width="20px" height="20px" viewBox="0 0 400 400"
+          style="enable-background:new 0 0 409.151 409.15; margin-top: 10px;" xml:space="preserve">
+          <g>
+            <path style="fill: white;"
+              d="M212.018,7.461c-60.921,0-118.198,28.518-155.245,75.784L0.122,50.491L0,237.986l162.426-93.645l-52.213-30.21
+                            c25.648-28.724,62.548-46.02,101.805-46.02c75.233,0,136.475,61.213,136.475,136.465c0,75.25-61.241,136.468-136.475,136.468
+                            v60.645c108.701,0,197.133-88.423,197.133-197.112C409.151,95.891,320.719,7.461,212.018,7.461z" />
+          </g>
+        </svg>
+      </button>
+    </div>
+    <div id="stats" class="card">
+      Stats
+      <table id="statsTable">
+        <tr>
+          <td>Best:</td>
+          <td id="B">Data</td>
+        </tr>
+        <tr>
+          <td>Worst:</td>
+          <td id="W">Data</td>
+        </tr>
+        <tr>
+          <td>Average:</td>
+          <td id="A">Data</td>
+        </tr>
+        <tr>
+          <td style="padding-bottom: 10px !important;">Median:</td>
+          <td style="padding-bottom: 10px !important;" id="M">Data</td>
+        </tr>
+        <tr>
+          <td>Best of 5:</td>
+          <td id="B5">Data</td>
+        </tr>
+        <tr>
+          <td>Avg. of 5:</td>
+          <td id="A5">Data</td>
+        </tr>
+        <tr>
+          <td style="padding-bottom: 10px !important;">Worst of 5:</td>
+          <td style="padding-bottom: 10px !important;" id="W5">Data</td>
+        </tr>
+        <tr>
+          <td>Best of 15:</td>
+          <td id="B15">Data</td>
+        </tr>
+        <tr>
+          <td>Avg. of 15:</td>
+          <td id="A15">Data</td>
+        </tr>
+        <tr>
+          <td>Worst of 15:</td>
+          <td id="W15">Data</td>
+        </tr>
+      </table>
+    </div>
+    <div id="graph" class="card">
+      Graph
+      <canvas id="myChart" width="430" height="230"></canvas>
+    </div>
+  </div>
+  <div id="footer">
+    <button id="darkmode" title="Toggle dark mode">
+      <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink" class="moon-icon"
+        onclick="document.body.setAttribute('data-theme', 'dark'), Cookies.set('mode', 'dark', { expires : 35 });">
+        <path
+          d="M7,12 C7,14.7614237 9.23857625,17 12,17 C13.6784032,17 15.1636533,16.1730136 16.0705043,14.904287 C15.722047,14.9672643 15.3641601,15 15,15 C11.6862915,15 9,12.3137085 9,9 C9,8.63583993 9.03273572,8.27795299 9.09571298,7.92949574 C7.82698638,8.8363467 7,10.3215968 7,12 Z M13.0850064,5.48759049 C13.0725916,5.49420639 13.0607081,5.50069096 13.0493559,5.50704421 C11.8265875,6.1913651 11,7.49915262 11,9 C11,11.209139 12.790861,13 15,13 C16.4434624,13 17.708346,12.2354133 18.4117504,11.0891403 C18.4223667,11.0718398 18.4332304,11.0534626 18.4443415,11.0340087 L18.4443111,11.0339913 C18.5183163,10.9044189 18.6833485,10.8593728 18.8129209,10.933378 C18.8869265,10.9756462 18.9366504,11.0503547 18.9470753,11.1349405 C18.9470753,11.1349405 18.9470753,11.1349405 18.9470753,11.1349405 C18.9820102,11.4183955 19,11.7070969 19,12 C19,15.8659932 15.8659932,19 12,19 C8.13400675,19 5,15.8659932 5,12 C5,8.13400675 8.13400675,5 12,5 C12.3438723,5 12.6819534,5.02479546 13.0125527,5.072696 C13.0125527,5.072696 13.0125527,5.072696 13.0125527,5.072696 L13.0125527,5.072696 C13.1336728,5.09024509 13.2176336,5.20265863 13.2000846,5.32377868 C13.1899712,5.39357867 13.1472354,5.45439594 13.0849929,5.48756515 Z"
+          fill-rule="nonzero"></path>
+      </svg>
+      <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink" class="sun-icon"
+        onclick="document.body.setAttribute('data-theme', 'false'), Cookies.set('mode', 'false', { expires: 310 });">
+        <path
+          d="M12,17 C9.23857625,17 7,14.7614237 7,12 C7,9.23857625 9.23857625,7 12,7 C14.7614237,7 17,9.23857625 17,12 C17,14.7614237 14.7614237,17 12,17 Z M12,15 C13.6568542,15 15,13.6568542 15,12 C15,10.3431458 13.6568542,9 12,9 C10.3431458,9 9,10.3431458 9,12 C9,13.6568542 10.3431458,15 12,15 Z M12,5 C11.4477153,5 11,4.55228475 11,4 C11,3.44771525 11.4477153,3 12,3 C12.5522847,3 13,3.44771525 13,4 C13,4.55228475 12.5522847,5 12,5 Z M12,21 C11.4477153,21 11,20.5522847 11,20 C11,19.4477153 11.4477153,19 12,19 C12.5522847,19 13,19.4477153 13,20 C13,20.5522847 12.5522847,21 12,21 Z M19,12 C19,11.4477153 19.4477153,11 20,11 C20.5522847,11 21,11.4477153 21,12 C21,12.5522847 20.5522847,13 20,13 C19.4477153,13 19,12.5522847 19,12 Z M3,12 C3,11.4477153 3.44771525,11 4,11 C4.55228475,11 5,11.4477153 5,12 C5,12.5522847 4.55228475,13 4,13 C3.44771525,13 3,12.5522847 3,12 Z M16.9497475,7.05025253 C16.5592232,6.65972824 16.5592232,6.02656326 16.9497475,5.63603897 C17.3402718,5.24551468 17.9734367,5.24551468 18.363961,5.63603897 C18.7544853,6.02656326 18.7544853,6.65972824 18.363961,7.05025253 C17.9734367,7.44077682 17.3402718,7.44077682 16.9497475,7.05025253 Z M5.63603897,18.363961 C5.24551468,17.9734367 5.24551468,17.3402718 5.63603897,16.9497475 C6.02656326,16.5592232 6.65972824,16.5592232 7.05025253,16.9497475 C7.44077682,17.3402718 7.44077682,17.9734367 7.05025253,18.363961 C6.65972824,18.7544853 6.02656326,18.7544853 5.63603897,18.363961 Z M7.05025253,7.05025253 C6.65972824,7.44077682 6.02656326,7.44077682 5.63603897,7.05025253 C5.24551468,6.65972824 5.24551468,6.02656326 5.63603897,5.63603897 C6.02656326,5.24551468 6.65972824,5.24551468 7.05025253,5.63603897 C7.44077682,6.02656326 7.44077682,6.65972824 7.05025253,7.05025253 Z M18.363961,18.363961 C17.9734367,18.7544853 17.3402718,18.7544853 16.9497475,18.363961 C16.5592232,17.9734367 16.5592232,17.3402718 16.9497475,16.9497475 C17.3402718,16.5592232 17.9734367,16.5592232 18.363961,16.9497475 C18.7544853,17.3402718 18.7544853,17.9734367 18.363961,18.363961 Z">
+        </path>
+      </svg>
+    </button>
+    <a href="#" onclick="introForward();" class="tut">Tutorial</a>
+
+    <svg version="1.1" id="logOut" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+      y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve"
+      onclick="MicroModal.show('modal-1');">
+      <g>
+        <g>
+          <path d="M360.233,121.189c11.046,0,20-8.954,20-20V49.378C380.233,22.151,357.837,0,330.31,0H90.923C63.396,0,41,22.151,41,49.378
+                v413.244C41,489.849,63.396,512,90.923,512H330.31c27.527,0,49.923-22.151,49.923-49.378v-51.811c0-11.045-8.955-19.999-20-19.999
+                c-11.046,0-20,8.954-20,20v51.811c0,5.171-4.451,9.378-9.923,9.378H90.923c-5.472,0-9.923-4.207-9.923-9.378V49.378
+                C81,44.207,85.451,40,90.923,40H330.31c5.472,0,9.923,4.207,9.923,9.378v51.811C340.233,112.235,349.187,121.189,360.233,121.189z
+                " />
+        </g>
+      </g>
+      <g>
+        <g>
+          <path
+            d="M464.963,241.682L358.521,137.881c-7.908-7.713-20.571-7.554-28.281,0.355c-7.712,7.907-7.553,20.57,0.355,28.281
+                L401.845,236H210.616c-11.046,0-20,8.954-20,20s8.954,20,20,20h191.229l-71.25,69.482c-7.908,7.711-8.067,20.374-0.355,28.281
+                c7.709,7.907,20.373,8.07,28.281,0.355l106.442-103.801C473.061,262.436,472.963,249.469,464.963,241.682z" />
+        </g>
+      </g>
+    </svg>
+
+  </div>
+
+  <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
+    <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+      <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
+        <header class="modal__header">
+          <h2 class="modal__title" id="modal-1-title">
+            Attention
+          </h2>
+          <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+        </header>
+        <main class="modal__content" id="modal-1-content">
+          <p>
+            Are you sure you want to log out? When logged out, your data will NOT be stores in the cloud.
+          </p>
+        </main>
+        <footer class="modal__footer">
+          <button class="modal__btn modal__btn-primary" onclick="signOut();">Log out<output></output></button>
+          <button class="modal__btn" data-micromodal-close aria-label="Close this dialog window">Cancel</button>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
